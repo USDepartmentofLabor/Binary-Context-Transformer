@@ -2,6 +2,14 @@
 
 Efficiently creates two-way interaction terms for sparse, binary data in large datasets and vocabularies.
 
+- [Overview](#overview)
+    - [Benefits](#benefits)
+    - [Drawbacks](#drawbacks)
+    - [Related Tools](#related-tools)
+- [Repository Contents](#repository-contents)
+- [Example](#example)
+- [Acknowledgements](#acknowledgements)
+
 ## Overview
 
 Suppose you are working with a dataset that includes two variables: the text of a message and the type of medium through which it was sent.
@@ -45,7 +53,7 @@ _**Reminder:** This is a hypothetical example. Emails, texts, and tweets contain
 
 ### Related Tools
 
-`BinaryContextTransformer` is similar to [`PolynomialFeatures`](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html) in Scikit-Learn, which supports other variable types. `PolynomialFeatures` can also generate interaction terms of any degree, not just two-way interactions. However, since every possible combination of features is considered, `PolynomialFeatures` runs in polynomial time of the requested degree.
+`BinaryContextTransformer` is similar to [`PolynomialFeatures`](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html) in Scikit-Learn, which supports other variable types. `PolynomialFeatures` can also generate interaction terms of any degree, not just two-way interactions. However, since every possible combination of features is considered, `PolynomialFeatures` runs in polynomial time at the requested degree.
 
 `BinaryContextTransformer` focuses on just binary data and takes advantage of sparsity to compute interaction terms in `O(S + V)` instead of `O(N(C+B))`, as described above.
 
