@@ -44,11 +44,13 @@ class BinaryContextTransformer(TransformerMixin):
         looper = range(X_context.shape[1])
         if self.progress is not None:
             looper = self.progress(looper, total=X_context.shape[1])
-        # ...
+        # Find possible interactions from the sparse input matrix.
         blocks = []
         # If each record appears in only one context, the runtime complexity
-        # of this loop is O(N) (where N = the number of records) because each
-        # row will be selected only once.
+        # of this loop is O(S), where S = the number of entries in the sparse
+        # matrix. Each row will be selected only once and the call to max()
+        # for a sparse matrix will only consider nonzero entries in the row.
+        # For sparse matrices, N < S << NB.
         for i in looper:
             # Get row indices of records that match context i
             row_list = X_context[:, i].indices
@@ -57,8 +59,8 @@ class BinaryContextTransformer(TransformerMixin):
                 # 1 if feature and context co-occur, 0 otherwise
                 row_vals = X[row_list, :].max(axis=0)
                 blocks.append(row_vals)
-        # S is a matrix where each row is a context and each column is
-        # a feature, nonzero entries are possible interactions
+        # The variable `S` is a matrix where each row is a context and each
+        # column is a feature, nonzero entries are possible interactions.
         S = sp.sparse.vstack(blocks)
         # Get column indices of features that occur in at least 2 contexts
         feature_idxs = csr_matrix(S.sum(axis=0) - 1).indices
@@ -125,11 +127,9 @@ class BinaryContextTransformer(TransformerMixin):
         looper = range(n)
         if self.progress is not None:
             looper = self.progress(looper, total=n)
-        # The runtime complexity of this loop is O(NW) where N is the
-        # number of records and W is the average number of base and
-        # context features active per record. For sparse interactions
-        # when each record belongs to only one context, W << B, where
-        # B is the number of base features.
+        # If each record appears in only one context, the runtime complexity
+        # of this loop is O(S) where S is the number of entries in the sparse
+        # matrix. See `fit` method for notes on S.
         for r in looper:
             contexts = X_context[r, :].indices
             features = X[r, :].indices

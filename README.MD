@@ -19,16 +19,16 @@ If you want to distinguish the words in the messages based on the type of medium
 ### Benefits
 
 - Follows Scikit-Learn `Transformer` format.
-- For sparse data, `fit_transform` runs in O(V + NW), where:
-	- N = number of records
-	- C = number of context features
-	- B = number of base features
+- Excludes interaction terms that appear in only one context.
+- For sparse data, `fit_transform` runs in O(S + V), where:
+	- N = number of records, rows in the input matrix
+    - B = number of base features, columns in the input matrix
+    - C = number of context features, columns in the input matrix
+    - S = number of entries in the input matrix
+        - For sparse matrices, N < S << NB
 	- V = number of combinations in resulting vocabulary
-		- For sparse interactions, V << CB
-	- W = average number of base and context features active per record
-		- For sparse interactions when each record belongs to only one context, W << B
-- Excludes interaction terms that appear in only one context
-- Serialized transform has similar memory size to `CountVectorizer` from Scikit-Learn
+		- For sparse interactions, V << BC
+- Serialized transformer has similar file size to `CountVectorizer` from Scikit-Learn.
 
 ### Drawbacks
 
