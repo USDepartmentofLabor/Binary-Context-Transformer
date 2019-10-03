@@ -95,3 +95,5 @@ For an example discussion of using `BinaryContextTransformer` for a classificati
 ## Acknowledgements
 
 Developed by Vinesh Kannan, Coding It Forward Data Science Fellow at the Bureau of Labor Statistics.
+
+Thank you to Alex Measure, Brandon Kopp, George Stamas, James Walker, Jennifer Edgar, and Mohamed Moulaye.
