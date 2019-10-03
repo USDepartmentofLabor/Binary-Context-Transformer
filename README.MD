@@ -18,7 +18,7 @@ If you want to distinguish the words in the messages based on the type of medium
 
 Examples of binary context features from the table above are `text_x_anything` or `tweet_x_anything`. These combination features may be useful if the meaning of the word `"anything"` differs based on the medium it was sent through.
 
-_**Reminder:** This is a fictional example. Emails, texts, and tweets contain personal information. If you are actually analyzing such data, make appropriate considerations for consent and privacy._
+_**Reminder:** This is a hypothetical example. Emails, texts, and tweets contain personal information. If you are actually analyzing such data, make appropriate considerations for consent and privacy._
 
 ### Benefits
 
@@ -44,8 +44,8 @@ _**Reminder:** This is a fictional example. Emails, texts, and tweets contain pe
 ## Contents
 
 - `binarycontexttransformer.py`: Python class for transformer.
-- `Examples.ipynb`: Jupyter notebook with example usage on fictional data.
-- `Rare Occupation Classification.ipynb`: Jupyter notebook with fictional data to illustrate application of binary context terms.
+- `Examples.ipynb`: Jupyter notebook with example usage on hypothetical data.
+- `Rare Occupation Classification.ipynb`: Jupyter notebook with hypothetical data to illustrate application of binary context terms.
 
 ## Example
 
