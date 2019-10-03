@@ -4,7 +4,7 @@ Efficiently creates two-way interaction terms for sparse, binary data in large d
 
 ## Overview
 
-Suppose you are working with a dataset that includes two predictor variables: the text of a message and the type of medium through which it was sent.
+Suppose you are working with a dataset that includes two variables: the text of a message and the type of medium through which it was sent.
 
 | type | message |
 |:-|:-|
@@ -12,9 +12,9 @@ Suppose you are working with a dataset that includes two predictor variables: th
 | tweet | Holla! Anyone doing anything tonight? |
 | email | Sent you a text. What are you doing tonight? |
 
-If you want to distinguish the words in the messages based on the type of medium, you may have to compute every possible combination of words and types. For large datasets that contain many unique words, this is computationally impractical. Moreover, such datasets are usually sparse and most combinations will never occur.
+If you want to distinguish the words in the messages based on the type of medium, you may have to compute every possible combination of words and types. For large datasets that contain many unique words, this is computationally onerous. Moreover, such datasets are usually sparse and most combinations will never occur.
 
-`BinaryContextTransformer` efficiently produces combinations between *context* features (message type) and *base* features (message words) so that they can be used for exploratory analysis or prediction.
+**Base** features, such as **message words**, are variables that may have different meanings in different contexts. **Context** features, such as**message types**, are indicator variables that denote which context a record belongs to. `BinaryContextTransformer` efficiently produces combinations between context features and base features so that they can be used for exploratory analysis or prediction. 
 
 ### Benefits
 
@@ -32,9 +32,10 @@ If you want to distinguish the words in the messages based on the type of medium
 
 ### Drawbacks
 
-- Only designed for binary features
-- May increase model overfitting
-- Must be fit in sequence
+- Only designed for binary features.
+- May increase model overfitting.
+- Must be fit in sequence after other transformers, such as `CountVectorizer`.
+- Input must be split into two matrices: one with base features (`X`) and one with context features (`X_context`).
 
 ## Contents
 

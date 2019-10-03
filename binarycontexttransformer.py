@@ -7,15 +7,17 @@ from scipy.sparse import csc_matrix, csr_matrix
 class BinaryContextTransformer(TransformerMixin):
     """
     Expands base features into interaction terms when they appear with
-    different context features. Both base features and context features
+    different context features. Base features are variables that may have different
+    meanings in different contexts. Context features are indicator variables that
+    denote which context a record belongs to. Both base features and context features
     must be binary.
     """
 
     def __init__(self, features, contexts, progress=None):
         """
         Args:
-            features: names of base features
-            contexts: names of context features
+            features: names of base feature columns for input matrix
+            contexts: names of context feature columns for input matrix
             progress: function of format progress_fn(iter, total) that takes
                 an iterable and an integer with the total number of items and
                 returns a generator to track progress at each step of the
@@ -30,8 +32,8 @@ class BinaryContextTransformer(TransformerMixin):
     def fit(self, X, X_context):
         """
         Args:
-            X: matrix of base feature columns
-            X_context: matrix of context feature columns
+            X: input matrix, base feature columns
+            X_context: input matrix, context feature columns
         """
         assert X.shape[1] == len(self.features), "X not same size as base."
         assert X_context.shape[1] == len(
@@ -101,8 +103,8 @@ class BinaryContextTransformer(TransformerMixin):
     def transform(self, X, X_context):
         """
         Args:
-            X: matrix of base feature columns
-            X_context: matrix of context feature columns
+            X: input matrix, base feature columns
+            X_context: input matrix, context feature columns
         """
         assert X.shape[1] == len(self.features), "X not same size as base."
         assert X_context.shape[1] == len(
@@ -148,8 +150,8 @@ class BinaryContextTransformer(TransformerMixin):
     def fit_transform(self, X, X_context):
         """
         Args:
-            X: matrix of base feature columns
-            X_context: matrix of context feature columns
+            X: input matrix, base feature columns
+            X_context: input matrix, context feature columns
         """
         assert X.shape[1] == len(self.features), "X not same size as base."
         assert X_context.shape[1] == len(
