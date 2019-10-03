@@ -7,15 +7,17 @@ from scipy.sparse import csc_matrix, csr_matrix
 class BinaryContextTransformer(TransformerMixin):
     """
     Expands base features into interaction terms when they appear with
-    different context features. Both base features and context features
+    different context features. Base features are variables that may have different
+    meanings in different contexts. Context features are indicator variables that
+    denote which context a record belongs to. Both base features and context features
     must be binary.
     """
 
     def __init__(self, features, contexts, progress=None):
         """
         Args:
-            features: names of base features
-            contexts: names of context features
+            features: names of base feature columns for input matrix
+            contexts: names of context feature columns for input matrix
             progress: function of format progress_fn(iter, total) that takes
                 an iterable and an integer with the total number of items and
                 returns a generator to track progress at each step of the
@@ -30,8 +32,8 @@ class BinaryContextTransformer(TransformerMixin):
     def fit(self, X, X_context):
         """
         Args:
-            X: matrix of base feature columns
-            X_context: matrix of context feature columns
+            X: input matrix, base feature columns
+            X_context: input matrix, context feature columns
         """
         assert X.shape[1] == len(self.features), "X not same size as base."
         assert X_context.shape[1] == len(
@@ -44,11 +46,13 @@ class BinaryContextTransformer(TransformerMixin):
         looper = range(X_context.shape[1])
         if self.progress is not None:
             looper = self.progress(looper, total=X_context.shape[1])
-        # ...
+        # Find possible interactions from the sparse input matrix.
         blocks = []
         # If each record appears in only one context, the runtime complexity
-        # of this loop is O(N) (where N = the number of records) because each
-        # row will be selected only once.
+        # of this loop is O(S), where S = the number of entries in the sparse
+        # matrix. Each row will be selected only once and the call to max()
+        # for a sparse matrix will only consider nonzero entries in the row.
+        # For sparse matrices, N < S << N x B.
         for i in looper:
             # Get row indices of records that match context i
             row_list = X_context[:, i].indices
@@ -57,8 +61,8 @@ class BinaryContextTransformer(TransformerMixin):
                 # 1 if feature and context co-occur, 0 otherwise
                 row_vals = X[row_list, :].max(axis=0)
                 blocks.append(row_vals)
-        # S is a matrix where each row is a context and each column is
-        # a feature, nonzero entries are possible interactions
+        # The variable `S` is a matrix where each row is a context and each
+        # column is a feature, nonzero entries are possible interactions.
         S = sp.sparse.vstack(blocks)
         # Get column indices of features that occur in at least 2 contexts
         feature_idxs = csr_matrix(S.sum(axis=0) - 1).indices
@@ -69,8 +73,8 @@ class BinaryContextTransformer(TransformerMixin):
         k = 0
         # The runtime complexity of this loop is O(V), where V is the number
         # of interaction terms in the resulting vocabulary. In the worst case,
-        # when every feature appears in every context, V = BC. When interactions
-        # are sparse, V << BC.
+        # when every feature appears in every context, V = B x C. When interactions
+        # are sparse, V << B x C.
         looper = feature_idxs
         if self.progress is not None:
             looper = self.progress(looper, total=len(feature_idxs))
@@ -99,8 +103,8 @@ class BinaryContextTransformer(TransformerMixin):
     def transform(self, X, X_context):
         """
         Args:
-            X: matrix of base feature columns
-            X_context: matrix of context feature columns
+            X: input matrix, base feature columns
+            X_context: input matrix, context feature columns
         """
         assert X.shape[1] == len(self.features), "X not same size as base."
         assert X_context.shape[1] == len(
@@ -125,11 +129,9 @@ class BinaryContextTransformer(TransformerMixin):
         looper = range(n)
         if self.progress is not None:
             looper = self.progress(looper, total=n)
-        # The runtime complexity of this loop is O(NW) where N is the
-        # number of records and W is the average number of base and
-        # context features active per record. For sparse interactions
-        # when each record belongs to only one context, W << B, where
-        # B is the number of base features.
+        # If each record appears in only one context, the runtime complexity
+        # of this loop is O(S) where S is the number of entries in the sparse
+        # matrix. See `fit` method for notes on S.
         for r in looper:
             contexts = X_context[r, :].indices
             features = X[r, :].indices
@@ -148,8 +150,8 @@ class BinaryContextTransformer(TransformerMixin):
     def fit_transform(self, X, X_context):
         """
         Args:
-            X: matrix of base feature columns
-            X_context: matrix of context feature columns
+            X: input matrix, base feature columns
+            X_context: input matrix, context feature columns
         """
         assert X.shape[1] == len(self.features), "X not same size as base."
         assert X_context.shape[1] == len(
