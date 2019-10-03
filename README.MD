@@ -14,7 +14,11 @@ Suppose you are working with a dataset that includes two variables: the text of 
 
 If you want to distinguish the words in the messages based on the type of medium, you may have to compute every possible combination of words and types. For large datasets that contain many unique words, this is computationally onerous. Moreover, such datasets are usually sparse and most combinations will never occur.
 
-**Base** features, such as **message words**, are variables that may have different meanings in different contexts. **Context** features, such as**message types**, are indicator variables that denote which context a record belongs to. `BinaryContextTransformer` efficiently produces combinations between context features and base features so that they can be used for exploratory analysis or prediction. 
+**Base** features, such as **message words**, are variables that may have different meanings in different contexts. **Context** features, such as**message types**, are indicator variables that denote which context a record belongs to. `BinaryContextTransformer` efficiently produces combinations between context features and base features so that they can be used for exploratory analysis or prediction.
+
+Examples of binary context features from the table above are `text_x_anything` or `tweet_x_anything`. These combination features may be useful if the meaning of the word `"anything"` differs based on the medium it was sent through.
+
+_**Reminder:** This is a fictional example. Emails, texts, and tweets contain personal information. If you are actually analyzing such data, make appropriate considerations for consent and privacy._
 
 ### Benefits
 
@@ -40,8 +44,51 @@ If you want to distinguish the words in the messages based on the type of medium
 ## Contents
 
 - `binarycontexttransformer.py`: Python class for transformer.
-- **Examples:** Jupyter notebook with example usage.
-- **Rare Occupation Classification:** Jupyter notebook with fictional data to illustrate application of binary interaction terms.
+- `Examples.ipynb`: Jupyter notebook with example usage on fictional data.
+- `Rare Occupation Classification.ipynb`: Jupyter notebook with fictional data to illustrate application of binary context terms.
+
+## Example
+
+This example shows how to create the binary context features described above. Usually, other transformers are used to convert input data into matrix form before using `BinaryContextTransformer`.
+
+```python
+>>> import pandas as pd
+>>> from sklearn.feature_extraction.text import CountVectorizer
+>>> from binarycontexttransformer import BinaryContextTransformer
+>>> 
+>>> 
+>>> data = [
+...     ("text", "text me if ur doing anything 2nite"),
+...     ("tweet", "Holla! Anyone doing anything tonight?"),
+...     ("email", "Sent you a text. What are you doing tonight?")
+... ]
+>>> df = pd.DataFrame(data, columns=["type", "message"])
+>>> vzr_type = CountVectorizer(analyzer="word", binary=True)
+>>> X_type = vzr_type.fit_transform(df["type"])
+>>> vzr_msg = CountVectorizer(analyzer="word", binary=True)
+>>> X_msg = vzr_msg.fit_transform(df["message"])
+>>> bct = BinaryContextTransformer(
+...     features=vzr_msg.get_feature_names(),
+...     contexts=vzr_type.get_feature_names()
+... )
+>>> X_msg_type = bct.fit_transform(X_msg, X_type)
+>>> print(X_msg_type.todense())
+[[1 0 0 1 0 0 1 0 0]
+ [0 1 0 0 1 0 0 0 1]
+ [0 0 1 0 0 1 0 1 0]]
+>>> bct.get_feature_names()
+['text_x_anything',
+ 'tweet_x_anything',
+ 'email_x_doing',
+ 'text_x_doing',
+ 'tweet_x_doing',
+ 'email_x_text',
+ 'text_x_text',
+ 'email_x_tonight',
+ 'tweet_x_tonight']
+```
+
+For more example usage, see the Jupyter notebooks.
 
 ## Acknowledgements
 
