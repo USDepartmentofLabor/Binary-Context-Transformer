@@ -34,6 +34,7 @@ _**Reminder:** This is a hypothetical example. Emails, texts, and tweets contain
 		- For sparse interactions, V << BC
 - Input matrices will be converted to [compressed sparse column (CSC)](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html) format, if not already in that format. The output matrix will also be in CSC format.
 - Serialized transformer has similar file size to `CountVectorizer` from Scikit-Learn.
+- Accepts a custom progress bar function, such as [tqdm](https://github.com/tqdm/tqdm) or a similar format.
 
 ### Drawbacks
 
