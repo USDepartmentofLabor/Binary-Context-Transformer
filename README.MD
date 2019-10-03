@@ -43,9 +43,9 @@ _**Reminder:** This is a hypothetical example. Emails, texts, and tweets contain
 
 ## Contents
 
-- `binarycontexttransformer.py`: Python class for transformer.
-- `Examples.ipynb`: Jupyter notebook with example usage on hypothetical data.
-- `Rare Occupation Classification.ipynb`: Jupyter notebook with hypothetical data to illustrate application of binary context terms.
+- [`binarycontexttransformer.py`](binarycontexttransformer.py): Python class for transformer.
+- [`Examples.ipynb`](Examples.ipynb): Jupyter notebook with example usage on hypothetical data.
+- [`Rare Occupation Classification.ipynb`](Rare%20Occupation%20Classification.ipynb): Jupyter notebook with hypothetical data to illustrate application of binary context terms.
 
 ## Example
 
@@ -88,7 +88,7 @@ This example shows how to create the binary context features described above. Us
  'tweet_x_tonight']
 ```
 
-For more example usage, see the Jupyter notebooks.
+For an example discussion of using `BinaryContextTransformer` for a classification task, [read this Jupyter notebook](Rare%20Occupation%20Classification.ipynb).
 
 ## Acknowledgements
 
