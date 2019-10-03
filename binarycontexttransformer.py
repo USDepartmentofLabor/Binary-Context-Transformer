@@ -52,7 +52,7 @@ class BinaryContextTransformer(TransformerMixin):
         # of this loop is O(S), where S = the number of entries in the sparse
         # matrix. Each row will be selected only once and the call to max()
         # for a sparse matrix will only consider nonzero entries in the row.
-        # For sparse matrices, N < S << NB.
+        # For sparse matrices, N < S << N x B.
         for i in looper:
             # Get row indices of records that match context i
             row_list = X_context[:, i].indices
@@ -73,8 +73,8 @@ class BinaryContextTransformer(TransformerMixin):
         k = 0
         # The runtime complexity of this loop is O(V), where V is the number
         # of interaction terms in the resulting vocabulary. In the worst case,
-        # when every feature appears in every context, V = BC. When interactions
-        # are sparse, V << BC.
+        # when every feature appears in every context, V = B x C. When interactions
+        # are sparse, V << B x C.
         looper = feature_idxs
         if self.progress is not None:
             looper = self.progress(looper, total=len(feature_idxs))

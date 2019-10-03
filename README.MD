@@ -37,9 +37,9 @@ _**Reminder:** This is a hypothetical example. Emails, texts, and tweets contain
     - `B` = number of base features, columns in the input matrix
     - `C` = number of context features, columns in the input matrix
     - `S` = number of entries in the input matrix
-        - For sparse matrices, `N < S << NB`
+        - For sparse matrices, `N < S << N x B`
 	- `V` = number of combinations in resulting vocabulary
-		- For sparse interactions, `V << BC`
+		- For sparse interactions, `V << B x C`
 - Input matrices will be converted to [compressed sparse column (CSC)](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html) format, if not already in that format. The output matrix will also be in CSC format.
 - Serialized transformer has similar file size to `CountVectorizer` from Scikit-Learn.
 - Accepts a custom progress bar function, such as [tqdm](https://github.com/tqdm/tqdm) or a similar format.
@@ -55,7 +55,7 @@ _**Reminder:** This is a hypothetical example. Emails, texts, and tweets contain
 
 `BinaryContextTransformer` is similar to [`PolynomialFeatures`](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html) in Scikit-Learn, which supports other variable types. `PolynomialFeatures` can also generate interaction terms of any degree, not just two-way interactions. However, since every possible combination of features is considered, `PolynomialFeatures` runs in polynomial time at the requested degree.
 
-`BinaryContextTransformer` focuses on just binary data and takes advantage of sparsity to compute interaction terms in `O(S + V)` instead of `O(N(C+B))`, as described above.
+`BinaryContextTransformer` focuses on just binary data and takes advantage of sparsity to compute interaction terms in `O(S + V)` instead of `O(N x (C + B))`, as described above.
 
 ## Repository Contents
 
